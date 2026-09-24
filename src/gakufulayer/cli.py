@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 import argparse
+import json
 from pathlib import Path
 
 from gakufulayer.preprocess import split_pdf
+from gakufulayer.overlay import render_layers
 from gakufulayer.translation_commit import commit_translation
 
 
@@ -36,6 +38,19 @@ def main(argv: list[str] | None = None) -> int:
     commit.add_argument("--source-language", required=True)
     commit.add_argument("--target-language", required=True)
     commit.add_argument("--overwrite", action="store_true")
+
+    render = commands.add_parser(
+        "render",
+        help="Render reviewed translation placements as independent PDF text layers",
+    )
+    render.add_argument("input_pdf")
+    render.add_argument("placements_json")
+    render.add_argument("--output-dir", required=True)
+    render.add_argument("--combined", action="store_true",
+                        help="Also produce a PDF with switchable language layers")
+    render.add_argument("--font", action="append", default=[], metavar="LANG=PATH",
+                        help="Embed a local font for one target language; repeat as needed")
+    render.add_argument("--report", help="Optional JSON execution report path")
 
     args = parser.parse_args(argv)
 
@@ -72,6 +87,33 @@ def main(argv: list[str] | None = None) -> int:
             parser.error(str(exc))
         print(result["status"])
         return 0 if result["status"] in {"passed", "already_committed"} else 2
+
+    if args.command == "render":
+        fonts: dict[str, str] = {}
+        try:
+            for mapping in args.font:
+                language, sep, filename = mapping.partition("=")
+                if not sep or not language.strip() or not filename.strip():
+                    raise ValueError("--font must use LANG=/path/to/font.ttf")
+                fonts[language] = filename
+            report = render_layers(
+                args.input_pdf,
+                args.placements_json,
+                args.output_dir,
+                font_map=fonts,
+                combined=args.combined,
+            )
+        except (OSError, ValueError) as exc:
+            parser.error(str(exc))
+        if args.report:
+            path = Path(args.report)
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(
+                json.dumps(report, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+        print(json.dumps(report, ensure_ascii=False))
+        return 0
 
     return 1
 
