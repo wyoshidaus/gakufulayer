@@ -42,7 +42,7 @@ Only explicitly marked, reviewer-identified text may be rendered. Drafts must be
 ## Commands
 
 ~~~bash
-python -m pip install -e '.[dev]'
+python -m pip install -e '.[pdf,dev]'  # PyMuPDF is an opt-in AGPLv3/commercial dependency
 gakufulayer render synthetic-score.pdf placements.json --output-dir build/out --combined
 ~~~
 
@@ -80,4 +80,4 @@ It also checks text can fit above the configured minimum font size, verifies tex
 
 **Not yet implemented:** automatic detection of free spaces in a musical score, collision checking against music notation, automatic word-by-word lyric alignment, block-to-original-page remapping, and production-scale performance benchmarks. Visual inspection of annotated score pages is still necessary.
 
-The Apache-2.0 license covers the project's own source code, not imported musical scores, copyrighted lyric texts, translations, or fonts. PyMuPDF, used for rendering, is offered under AGPLv3 or commercial terms; review [dependency-license issue #5](https://github.com/wyoshidaus/gakufulayer/issues/5) before distributing a combined application or using it as a hosted service.
+The Apache-2.0 license covers the project's own source code, not imported musical scores, copyrighted lyric texts, translations, or fonts. PyMuPDF, used **only when the optional [pdf] extra is installed**, is offered under AGPLv3 or commercial terms; review the [dependency-license inventory](dependency-licensing.md) and [issue #5](https://github.com/wyoshidaus/gakufulayer/issues/5) before distributing a combined application or using it as a hosted service.

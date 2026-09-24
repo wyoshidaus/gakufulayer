@@ -9,10 +9,12 @@ description = "Multilingual vocal score preparation with page-block PDF preproce
 readme = "README.md"
 license = {text = "Apache-2.0"}
 requires-python = ">=3.10"
-dependencies = ["pypdf>=5,<7", "PyMuPDF>=1.26,<2"]
+dependencies = ["pypdf>=5,<7"]
 classifiers = ["License :: OSI Approved :: Apache Software License"]
 
 [project.optional-dependencies]
+# Explicit opt-in: PyMuPDF is AGPLv3 or separately licensed by Artifex.
+pdf = ["PyMuPDF>=1.26,<2"]
 dev = ["pytest>=8,<10"]
 
 [project.scripts]

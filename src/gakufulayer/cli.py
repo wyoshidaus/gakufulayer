@@ -8,7 +8,6 @@ from pathlib import Path
 
 from gakufulayer.blocks import assemble_blocks, remap_placements
 from gakufulayer.preprocess import split_pdf
-from gakufulayer.overlay import render_layers
 from gakufulayer.translation_commit import commit_translation
 
 
@@ -132,6 +131,17 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if args.command == "render":
+        try:
+            # Keep PyMuPDF out of the default, BSD-3-Clause pypdf-based CLI path.
+            from gakufulayer.overlay import render_layers
+        except ModuleNotFoundError as exc:
+            if exc.name in {"fitz", "pymupdf"}:
+                parser.error(
+                    "PDF rendering requires the optional PyMuPDF dependency. "
+                    "Install the [pdf] extra and review docs/dependency-licensing.md "
+                    "before distributing or hosting a renderer."
+                )
+            raise
         fonts: dict[str, str] = {}
         try:
             for mapping in args.font:
