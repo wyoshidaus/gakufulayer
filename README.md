@@ -68,3 +68,18 @@ The project's code license does not grant rights to third-party score editions, 
 ## Contributing and licensing
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md). GakufuLayer is licensed under the Apache License 2.0. Third-party scores, lyric texts, translations, fonts and other assets remain subject to their own rights. **Important dependency:** the current PDF renderer uses PyMuPDF, offered under AGPLv3 or commercial terms. Deployment and distribution obligations are under review in [issue #5](https://github.com/wyoshidaus/gakufulayer/issues/5); the Apache-2.0 declaration applies to this project's own source, not the entire runtime stack.
+
+
+## Multilingual PDF layers
+
+GakufuLayer can now render prepared translation text into independent PDF Optional Content Groups (OCGs), one layer per target language. Supporting PDF viewers can show or hide these layers without changing the original score content.
+
+The renderer uses PyMuPDF's shaped HTML text path so CJK and right-to-left scripts can be handled by the same pipeline. The input is a JSON layer plan with page rectangles and explicit language tags. This stage **does not translate text or discover score coordinates**; it renders already prepared text.
+
+Example:
+
+~~~bash
+gakufulayer render-layers score.pdf layers.json layered-score.pdf
+~~~
+
+See [multilingual PDF layers](docs/pdf-layers.md).
