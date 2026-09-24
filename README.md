@@ -44,6 +44,7 @@ Adjust `--end-page` if the source PDF contains fewer than 50 pages. Output inclu
 The rendering step requires a **reviewed, pre-positioned** JSON placement document. It does not discover empty spaces on the score automatically. The sample in [examples/placements.synthetic.json](examples/placements.synthetic.json) is for a synthetic PDF only.
 
 ```bash
+python examples/create_synthetic_score.py synthetic-score.pdf
 gakufulayer render synthetic-score.pdf examples/placements.synthetic.json \
   --output-dir build/translated --combined
 ```
@@ -66,4 +67,4 @@ The project's code license does not grant rights to third-party score editions, 
 
 ## Contributing and licensing
 
-Read [CONTRIBUTING.md](CONTRIBUTING.md). GakufuLayer is licensed under the Apache License 2.0. Third-party scores, lyric texts, translations, and other assets remain subject to their own rights and are not relicensed by GakufuLayer.
+Read [CONTRIBUTING.md](CONTRIBUTING.md). GakufuLayer is licensed under the Apache License 2.0. Third-party scores, lyric texts, translations, fonts and other assets remain subject to their own rights. **Important dependency:** the current PDF renderer uses PyMuPDF, offered under AGPLv3 or commercial terms. Deployment and distribution obligations are under review in [issue #5](https://github.com/wyoshidaus/gakufulayer/issues/5); the Apache-2.0 declaration applies to this project's own source, not the entire runtime stack.
