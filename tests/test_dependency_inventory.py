@@ -93,3 +93,14 @@ def test_full_install_without_renderer_is_environment_error(tmp_path):
     pypdf = FakeDistribution(tmp_path, "pypdf", "6", "BSD-3-Clause")
     report = collect_inventory([pypdf], mode="full")
     assert report["environment_errors"] == ["PyMuPDF_missing_from_full_install"]
+
+
+def test_duplicate_editable_metadata_does_not_raise_false_missing_notice(tmp_path):
+    good = FakeDistribution(tmp_path / "good", "pypdf", "6.19", "BSD-3-Clause")
+    broken = FakeDistribution(tmp_path / "broken", "pypdf", "6.19", "BSD-3-Clause")
+    missing = broken.root / broken._relative
+    missing.unlink()
+    result = collect_inventory([broken, good], mode="core")
+    assert len(result["packages"]) == 1
+    assert result["packages"][0]["evidence_warnings"] == []
+    assert result["review_required"] == []

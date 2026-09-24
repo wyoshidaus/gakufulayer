@@ -11,7 +11,7 @@ not assert that every planned distribution or hosting arrangement is cleared.
 | GakufuLayer original code | This repository | Apache-2.0 | LICENSE applies to GakufuLayer's own code and contributions. |
 | pypdf | Base dependency for split, assembly and page mapping | BSD-3-Clause | Preserve notices and any other requirements when redistributing it. |
 | PyMuPDF / MuPDF | **Optional** [pdf] rendering extra | AGPLv3 **or separate Artifex commercial license** | Separate license review required for combined distribution and network deployments. |
-| Setuptools | Build system | See version/distribution's own metadata | Resolve and inventory exact build-time version for release. |
+| Setuptools | Build system | MIT (upstream v79.0.1 LICENSE verified; CI metadata may omit a concise SPDX field) | Include upstream notices when redistributing a bundled build tool; isolated build-time dependencies are not represented by the core runtime snapshot. |
 | Pytest | Optional [dev] test extra | See version/distribution's own metadata | Development-only unless a distribution bundles it. |
 | User-supplied fonts, score PDFs and lyric texts | Not supplied by repository | Asset-specific | Check redistribution and embedding rights independently. |
 
@@ -103,7 +103,17 @@ decision are recorded in `review_required`; any PyMuPDF installation in
 the isolated core job is an explicit `environment_error`.
 
 The installation snapshot is **not** a pinned lockfile, a full vendored-binary
-license analysis, or a permission to distribute. License-text copies in CI
+license analysis, or a permission to distribute. In the first 2026-09-24
+full-runtime snapshots, PyMuPDF 1.28.2 is the one unresolved license route on
+Python 3.12. Python 3.10 additionally installs setuptools 79.0.1, whose
+legacy package metadata lacks a short machine-readable license expression;
+its MIT text was checked at
+[the exact upstream v79.0.1 LICENSE](https://github.com/pypa/setuptools/blob/v79.0.1/LICENSE).
+This evidence does not resolve the separate Artifex licensing question.
+
+GakufuLayer's own packaging has been updated to standardized PEP 639 metadata
+(`license = "Apache-2.0"`, `license-files = ["LICENSE"]`,
+`setuptools>=77`) rather than the deprecated TOML license table. License-text copies in CI
 are evidence for a reviewer; release-specific notices must be decided and
 included in the correct distribution after legal review.
 

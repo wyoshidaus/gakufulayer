@@ -146,6 +146,23 @@ def collect_inventory(
                 current["license_markers"] = markers
 
     packages = [by_identity[key] for key in sorted(by_identity)]
+    for package in packages:
+        # Editable installs can yield both an ordinary dist-info record and
+        # a synthetic editable metadata record. If the same license file was
+        # successfully read from one, do not retain a stale "unreadable"
+        # warning from its duplicate.
+        successful = {item["distribution_path"] for item in package["license_files"]}
+        remaining = []
+        for warning in package["evidence_warnings"]:
+            parts = warning.split(":", 2)
+            if (
+                len(parts) >= 2
+                and parts[0] in {"license_file_unreadable", "license_file_missing_or_too_large"}
+                and parts[1] in successful
+            ):
+                continue
+            remaining.append(warning)
+        package["evidence_warnings"] = remaining
     review: list[dict[str, str]] = []
     names = {p["normalized_name"] for p in packages}
     for package in packages:
