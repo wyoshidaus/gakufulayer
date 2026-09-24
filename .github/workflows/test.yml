@@ -28,11 +28,13 @@ jobs:
       - name: Record core dependency versions and license metadata
         run: |
           mkdir -p inventory
-          .venv-core/bin/python scripts/dependency_inventory.py > inventory/core-py312.json
+          .venv-core/bin/python scripts/dependency_inventory.py \
+            --mode core --output inventory/core-py312.json \
+            --notice-dir inventory/notice-evidence
       - uses: actions/upload-artifact@v4
         with:
           name: dependency-inventory-core-py312
-          path: inventory/core-py312.json
+          path: inventory/
           retention-days: 30
   pytest:
     runs-on: ubuntu-latest
@@ -56,10 +58,13 @@ jobs:
         if: always()
         run: |
           mkdir -p inventory
-          python scripts/dependency_inventory.py > inventory/full-py${{ matrix.python-version }}.json
+          python scripts/dependency_inventory.py \
+            --mode full \
+            --output inventory/full-py${{ matrix.python-version }}.json \
+            --notice-dir inventory/notice-evidence
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: dependency-inventory-full-py${{ matrix.python-version }}
-          path: inventory/full-py${{ matrix.python-version }}.json
+          path: inventory/
           retention-days: 30

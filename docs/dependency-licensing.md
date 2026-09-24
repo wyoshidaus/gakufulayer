@@ -17,6 +17,7 @@ not assert that every planned distribution or hosting arrangement is cleared.
 
 Primary sources:
 - https://pymupdf.io/licensing
+- https://artifex.com/licensing
 - https://pymupdf.readthedocs.io/en/latest/about.html#license-and-copyright
 - https://pypdf.readthedocs.io/en/latest/meta/faq.html
 - https://apache.org/licenses/GPL-compatibility.html
@@ -92,9 +93,19 @@ copyright notices or personal metadata values. It still includes file paths.
 Every main-branch CI run now produces separate 30-day GitHub Actions artifacts:
 `dependency-inventory-core-py312`,
 `dependency-inventory-full-py3.10`, and
-`dependency-inventory-full-py3.12`. These inventories list *actual installed*
-versions and metadata license markers. They are **not** pinned lockfiles and
-must be reviewed alongside transitive license texts and notices before release.
+`dependency-inventory-full-py3.12`. These inventories now list *actual installed* versions, declared dependency
+requirements, license markers, and SHA-256 hashes of discovered installed
+license texts. The CI artifact also includes copies of those license texts
+under `notice-evidence/` for manual review. The inventory deduplicates
+editable installations that appear twice under the same package/version
+identity. Unknown/missing license evidence and the PyMuPDF dual-license
+decision are recorded in `review_required`; any PyMuPDF installation in
+the isolated core job is an explicit `environment_error`.
+
+The installation snapshot is **not** a pinned lockfile, a full vendored-binary
+license analysis, or a permission to distribute. License-text copies in CI
+are evidence for a reviewer; release-specific notices must be decided and
+included in the correct distribution after legal review.
 
 ## Release gate — must be resolved before tagging a distributed renderer
 
@@ -102,8 +113,8 @@ must be reviewed alongside transitive license texts and notices before release.
 - [x] Keep the source code LICENSE and package metadata accurate for *original*
       GakufuLayer code.
 - [x] Test core CLI without importing or installing PyMuPDF.
-- [x] Automate installed core/full dependency version and license-marker
-      inventories as downloadable CI artifacts.
+- [x] Automate installed core/full dependency, license-marker and bundled
+      license-text evidence inventories as downloadable CI artifacts.
 - [ ] Record pinned release dependency versions, review complete transitive
       licenses, and prepare required notices for shipped binaries/wheels.
 - [ ] Choose and document the legally reviewed renderer release path:

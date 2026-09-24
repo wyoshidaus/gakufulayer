@@ -90,7 +90,7 @@ The combined PDF contains one optional content group per target language, enabli
 4. Plan score-aware placement without collisions, support more tested scripts and verify large-score page-block reassembly.
 5. Benchmark resumable workflows on legally usable large scores.
 
-See [architecture](docs/architecture.md), [multilingual design](docs/multilingual.md), and [roadmap](docs/roadmap.md).
+See [architecture](docs/architecture.md), [multilingual design](docs/multilingual.md), and [roadmap](docs/roadmap.md). The [release licensing checklist](docs/dependency-licensing.md) explains the opt-in renderer's unresolved distribution conditions, and CI archives installed-version/license-evidence snapshots.
 
 ## Legal considerations
 
