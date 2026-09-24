@@ -155,12 +155,24 @@ def collect_inventory(
         remaining = []
         for warning in package["evidence_warnings"]:
             parts = warning.split(":", 2)
-            if (
-                len(parts) >= 2
-                and parts[0] in {"license_file_unreadable", "license_file_missing_or_too_large"}
-                and parts[1] in successful
-            ):
-                continue
+            if len(parts) >= 2 and parts[0] in {
+                "license_file_unreadable", "license_file_missing_or_too_large"
+            }:
+                unresolved = PurePosixPath(parts[1])
+                if parts[1] in successful:
+                    continue
+                # An editable distribution can list the short License-File
+                # "LICENSE" even though the wheel metadata lists it as
+                # "<name>.dist-info/licenses/LICENSE". The actual file is
+                # already captured; do not report the duplicate alias as lost
+                # evidence. Keep distinct missing paths/notices as warnings.
+                if len(unresolved.parts) == 1 and any(
+                    ".dist-info/licenses/" in available
+                    and available.rsplit("/", 1)[-1].casefold()
+                    == unresolved.name.casefold()
+                    for available in successful
+                ):
+                    continue
             remaining.append(warning)
         package["evidence_warnings"] = remaining
     review: list[dict[str, str]] = []

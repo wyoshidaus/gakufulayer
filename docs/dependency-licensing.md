@@ -103,7 +103,8 @@ decision are recorded in `review_required`; any PyMuPDF installation in
 the isolated core job is an explicit `environment_error`.
 
 The installation snapshot is **not** a pinned lockfile, a full vendored-binary
-license analysis, or a permission to distribute. In the first 2026-09-24
+license analysis, or a permission to distribute. In the [2026-09-24 CI evidence](dependency-evidence-2026-09-24.md),
+the first
 full-runtime snapshots, PyMuPDF 1.28.2 is the one unresolved license route on
 Python 3.12. Python 3.10 additionally installs setuptools 79.0.1, whose
 legacy package metadata lacks a short machine-readable license expression;

@@ -104,3 +104,31 @@ def test_duplicate_editable_metadata_does_not_raise_false_missing_notice(tmp_pat
     assert len(result["packages"]) == 1
     assert result["packages"][0]["evidence_warnings"] == []
     assert result["review_required"] == []
+
+
+def test_editable_short_license_alias_is_resolved_by_installed_dist_info(tmp_path):
+    good = FakeDistribution(tmp_path / "installed", "gakufulayer", "0.1.dev0",
+                            "Apache-2.0")
+    editable = FakeDistribution(tmp_path / "editable", "gakufulayer", "0.1.dev0",
+                                "Apache-2.0", with_notice=False)
+    # PEP 639 editable metadata lists a relative LICENSE that is not present
+    # at locate_file("LICENSE"); the installed dist-info has the same text.
+    editable.files = [PurePosixPath("LICENSE")]
+    inventory = collect_inventory([editable, good], mode="unclassified")
+    item = inventory["packages"][0]
+    assert item["evidence_warnings"] == []
+    assert len(item["license_files"]) == 1
+    assert inventory["review_required"] == []
+
+
+def test_distinct_missing_notice_is_not_silenced_by_existing_license(tmp_path):
+    good = FakeDistribution(tmp_path / "installed", "gakufulayer", "0.1.dev0",
+                            "Apache-2.0")
+    incomplete = FakeDistribution(tmp_path / "editable", "gakufulayer", "0.1.dev0",
+                                  "Apache-2.0", with_notice=False)
+    incomplete.files = [PurePosixPath("NOTICE")]
+    inventory = collect_inventory([incomplete, good])
+    assert any(
+        row["reason"] == "license_evidence_incomplete"
+        for row in inventory["review_required"]
+    )
