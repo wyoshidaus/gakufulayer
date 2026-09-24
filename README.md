@@ -103,4 +103,4 @@ Example:
 gakufulayer render-layers score.pdf layers.json layered-score.pdf
 ~~~
 
-See [multilingual PDF layers](docs/pdf-layers.md).
+See [multilingual PDF layers](docs/overlay.md).
