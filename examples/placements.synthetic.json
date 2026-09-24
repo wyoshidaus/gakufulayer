@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "source_language": "de",
+  "placements": [
+    {
+      "source_ref": "synthetic-001",
+      "page": 1,
+      "language": "ja",
+      "text": "こんばんは",
+      "rect": [
+        80,
+        445,
+        310,
+        475
+      ],
+      "status": "reviewed",
+      "reviewer": "example-reviewer",
+      "font_size": 12
+    },
+    {
+      "source_ref": "synthetic-001",
+      "page": 1,
+      "language": "en",
+      "text": "Good evening",
+      "rect": [
+        80,
+        445,
+        310,
+        475
+      ],
+      "status": "reviewed",
+      "reviewer": "example-reviewer",
+      "font_size": 12
+    }
+  ]
+}
