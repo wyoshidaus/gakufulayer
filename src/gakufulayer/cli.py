@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import argparse
+from pathlib import Path
 
 from gakufulayer.preprocess import split_pdf
+from gakufulayer.translation_commit import commit_translation
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -24,6 +26,17 @@ def main(argv: list[str] | None = None) -> int:
         metavar="LANG",
         help="Target language (repeat for multiple targets; e.g. ja and en)",
     )
+    commit = commands.add_parser(
+        "commit-translation",
+        help="Validate and commit one line-oriented translation unit",
+    )
+    commit.add_argument("ready_file")
+    commit.add_argument("translation_output")
+    commit.add_argument("passed_output")
+    commit.add_argument("--source-language", required=True)
+    commit.add_argument("--target-language", required=True)
+    commit.add_argument("--overwrite", action="store_true")
+
     args = parser.parse_args(argv)
 
     if args.command == "preprocess":
@@ -44,6 +57,22 @@ def main(argv: list[str] | None = None) -> int:
             f"for pages {manifest['start_page']}–{manifest['end_page']}"
         )
         return 0
+
+    if args.command == "commit-translation":
+        try:
+            result = commit_translation(
+                Path(args.ready_file),
+                Path(args.translation_output),
+                Path(args.passed_output),
+                source_language=args.source_language,
+                target_language=args.target_language,
+                overwrite=args.overwrite,
+            )
+        except (FileNotFoundError, ValueError) as exc:
+            parser.error(str(exc))
+        print(result["status"])
+        return 0 if result["status"] in {"passed", "already_committed"} else 2
+
     return 1
 
 
