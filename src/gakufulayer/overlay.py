@@ -256,6 +256,11 @@ def render_layers(
                 if output.page_count != page_count:
                     raise ValueError(f"Page count changed in {filename}")
             audit = audit_pdf_metadata(source, stage / filename)
+            if audit["status"] == "fail":
+                raise ValueError(
+                    f"Metadata provenance audit failed in {filename}; "
+                    "source /Info or XMP changed or disappeared"
+                )
             metadata_audit[tag] = {
                 "status": audit["status"],
                 "checks": audit["checks"],
@@ -263,11 +268,6 @@ def render_layers(
                 "output_has_xmp": audit["output_has_xmp"],
                 "limits": audit["limits"],
             }
-            if audit["status"] == "fail":
-                raise ValueError(
-                    f"Metadata provenance audit failed in {filename}; "
-                    "source /Info or XMP changed or disappeared"
-                )
         for filename in names.values():
             os.replace(stage / filename, result_dir / filename)
     return {
