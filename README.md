@@ -78,6 +78,8 @@ gakufulayer render synthetic-score.pdf examples/placements.synthetic.json \
   --output-dir build/translated --combined
 ```
 
+The renderer compares source and output PDF Info/XMP metadata before publishing each language file. A changed or missing source notice fails the operation; a missing output Producer is flagged for review. To inspect an existing result without installing the PDF renderer, run `gakufulayer audit-metadata source.pdf output.pdf --report audit.json`. This is a preservation check, not proof of license compliance.
+
 The combined PDF contains one optional content group per target language, enabling layer switching in compatible viewers. See [PDF overlay usage and limitations](docs/overlay.md) and [VSOPER migration audit](docs/vsoper-migration.md).
 
 ## Planned architecture

@@ -18,6 +18,7 @@ from typing import Any, Mapping
 import fitz
 
 from gakufulayer.languages import normalize_language_tag
+from gakufulayer.pdf_metadata import audit_pdf_metadata
 
 RTL_LANGUAGES = frozenset({"ar", "fa", "he", "ur", "ps", "sd"})
 
@@ -247,11 +248,26 @@ def render_layers(
                 _verify_output(doc, placements)
                 doc.save(stage / filename, garbage=3, deflate=True)
             names["combined"] = filename
-        # Check saved PDFs, not only in-memory text.
-        for filename in names.values():
+        # Verify the staged files before publishing any output. Record warning
+        # states for human review, but block missing/modified source notices.
+        metadata_audit: dict[str, dict[str, Any]] = {}
+        for tag, filename in names.items():
             with fitz.open(stage / filename) as output:
                 if output.page_count != page_count:
                     raise ValueError(f"Page count changed in {filename}")
+            audit = audit_pdf_metadata(source, stage / filename)
+            metadata_audit[tag] = {
+                "status": audit["status"],
+                "checks": audit["checks"],
+                "source_has_xmp": audit["source_has_xmp"],
+                "output_has_xmp": audit["output_has_xmp"],
+                "limits": audit["limits"],
+            }
+            if audit["status"] == "fail":
+                raise ValueError(
+                    f"Metadata provenance audit failed in {filename}; "
+                    "source /Info or XMP changed or disappeared"
+                )
         for filename in names.values():
             os.replace(stage / filename, result_dir / filename)
     return {
@@ -260,5 +276,6 @@ def render_layers(
         "page_count": page_count,
         "annotation_count": len(placements),
         "per_language": reports,
+        "metadata_audit": metadata_audit,
         "outputs": {tag: str(result_dir / name) for tag, name in names.items()},
     }

@@ -69,21 +69,50 @@ in a GPLv3 project but GPLv3 code cannot simply be included in an Apache-only
 project. Assess AGPLv3 combinations and actual distribution form separately;
 an optional Python extra is an engineering separation, not a legal conclusion.
 
+## Metadata audit and reproducible dependency evidence
+
+The renderer now audits both the PDF Info dictionary and raw XMP streams for
+**each staged per-language PDF and the combined OCG PDF**. Changed or missing
+source metadata blocks publication; an absent output Producer is reported as
+`review_required`, not treated as legal clearance. The audit does not claim
+that an original source's metadata is sufficient for a newly generated file.
+
+Run the audit independently **without the optional PDF renderer**:
+
+```bash
+gakufulayer audit-metadata source.pdf output.pdf --report metadata-audit.json
+```
+
+Exit statuses are 0 (pass), 2 (failed source metadata preservation), and
+3 (requires review). The report lists field names and check results, not raw
+copyright notices or personal metadata values. It still includes file paths.
+
+Every main-branch CI run now produces separate 30-day GitHub Actions artifacts:
+`dependency-inventory-core-py312`,
+`dependency-inventory-full-py3.10`, and
+`dependency-inventory-full-py3.12`. These inventories list *actual installed*
+versions and metadata license markers. They are **not** pinned lockfiles and
+must be reviewed alongside transitive license texts and notices before release.
+
 ## Release gate — must be resolved before tagging a distributed renderer
 
 - [x] Enumerate direct runtime dependencies and avoid silently installing PyMuPDF.
 - [x] Keep the source code LICENSE and package metadata accurate for *original*
       GakufuLayer code.
 - [x] Test core CLI without importing or installing PyMuPDF.
-- [ ] Record exact locked release dependency versions, full transitive license
-      inventory and notices to accompany shipped binaries/wheels.
+- [x] Automate installed core/full dependency version and license-marker
+      inventories as downloadable CI artifacts.
+- [ ] Record pinned release dependency versions, review complete transitive
+      licenses, and prepare required notices for shipped binaries/wheels.
 - [ ] Choose and document the legally reviewed renderer release path:
       AGPL-compliant full distribution; Artifex commercial license; or an
       appropriately licensed replacement.
 - [ ] Define hosted-service obligations if offering any networked workflow.
-- [ ] Audit actual producer/copyright notices (PDF Info **and** XMP) in
-      representative rendered and postprocessed output, including any
-      original-source notices; obtain licensing clarification if uncertain.
+- [x] Add fail-closed automatic /Info and XMP source-provenance checks to
+      staged per-language and combined renderer output.
+- [ ] Review representative real source PDFs and postprocessed output,
+      original-source notices and generated-PDF producer requirements;
+      obtain licensing clarification where necessary.
 - [ ] Validate user-provided font embedding and score/lyric rights.
 - [ ] Review packaging, release notes, website claims and deployment artifacts
       against the selected distribution model.

@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 
 from gakufulayer.blocks import assemble_blocks, remap_placements
+from gakufulayer.pdf_metadata import audit_pdf_metadata, save_audit_report
 from gakufulayer.preprocess import split_pdf
 from gakufulayer.translation_commit import commit_translation
 
@@ -53,6 +54,14 @@ def main(argv: list[str] | None = None) -> int:
     remap.add_argument("placements_json")
     remap.add_argument("assembly_report")
     remap.add_argument("output_placements_json")
+
+    audit = commands.add_parser(
+        "audit-metadata",
+        help="Compare source and output PDF Info and XMP notices (core-only)",
+    )
+    audit.add_argument("source_pdf")
+    audit.add_argument("output_pdf")
+    audit.add_argument("--report", help="Write a JSON report; raw notice text is omitted")
 
     render = commands.add_parser(
         "render",
@@ -129,6 +138,16 @@ def main(argv: list[str] | None = None) -> int:
             parser.error(str(exc))
         print(json.dumps(result, ensure_ascii=False))
         return 0
+
+    if args.command == "audit-metadata":
+        try:
+            report = audit_pdf_metadata(args.source_pdf, args.output_pdf)
+            if args.report:
+                save_audit_report(args.report, report)
+        except (OSError, ValueError) as exc:
+            parser.error(str(exc))
+        print(json.dumps(report, ensure_ascii=False))
+        return {"pass": 0, "review_required": 3, "fail": 2}[report["status"]]
 
     if args.command == "render":
         try:
