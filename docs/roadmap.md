@@ -7,16 +7,20 @@
 - [x] Support metadata for one source language and multiple translation targets in the local prototype.
 - [x] Publish initial preprocessing and language-metadata code to GitHub.
 - [x] Adopt Apache License 2.0 for newly authored GakufuLayer code.
-- [ ] Inspect VSOPER code, dependencies, and score/translation assets before migration.
+- [x] Audit VSOPER's translation-unit validation and port its transaction semantics.
+- [ ] Finish auditing VSOPER's PDF and score-specific assets/dependencies before further migration.
 
 ## Multilingual pipeline
 
 - [ ] Extract source-language lyric segments and stable score positions.
-- [ ] Define translation-provider and reviewed-text import interfaces.
-- [ ] Port and test VSOPER's existing Japanese translation as one target adapter.
+- [x] Define provider-neutral translation interfaces and an offline reviewed-text adapter.
+- [x] Port and test the VSOPER translation-unit validation/commit protocol without a fixed target language.
+- [ ] Connect a real translation provider; the ported protocol does not translate by itself.
 - [ ] Implement another source/target pairing and publish reviewed reference tests.
 - [ ] Add source-language IPA, fonts and layout tests for CJK and RTL scripts.
-- [ ] Place translated text as selectable PDF annotation layers.
+- [x] Render reviewed, explicitly positioned multilingual text as selectable PDFs and optional OCG groups.
+- [ ] Detect valid score-relative placement automatically and validate collision with notation.
+- [ ] Verify mapping and merge behavior for independently preprocessed page blocks.
 - [ ] Add resumable blocks, validation and deterministic PDF assembly.
 
 ## Community readiness
