@@ -80,4 +80,4 @@ It also checks text can fit above the configured minimum font size, verifies tex
 
 **Not yet implemented:** automatic detection of free spaces in a musical score, collision checking against music notation, automatic word-by-word lyric alignment, block-to-original-page remapping, and production-scale performance benchmarks. Visual inspection of annotated score pages is still necessary.
 
-The Apache-2.0 license covers the project's own source code, not imported musical scores, copyrighted lyric texts, translations, or fonts.
+The Apache-2.0 license covers the project's own source code, not imported musical scores, copyrighted lyric texts, translations, or fonts. PyMuPDF, used for rendering, is offered under AGPLv3 or commercial terms; review [dependency-license issue #5](https://github.com/wyoshidaus/gakufulayer/issues/5) before distributing a combined application or using it as a hosted service.
