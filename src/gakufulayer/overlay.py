@@ -15,7 +15,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping
 
-import fitz
+import pymupdf as fitz
 
 from gakufulayer.languages import normalize_language_tag
 from gakufulayer.pdf_metadata import audit_pdf_metadata

@@ -4,7 +4,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-import fitz
+import pymupdf as fitz
 
 
 def make_synthetic_score(path: str | Path) -> None:

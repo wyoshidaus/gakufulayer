@@ -7,7 +7,7 @@ from pathlib import Path
 import subprocess
 import sys
 
-import fitz
+import pymupdf as fitz
 
 
 REPO = Path(__file__).resolve().parents[1]
@@ -22,7 +22,7 @@ def test_rights_safe_demo_runs_full_pipeline(tmp_path):
         ],
         check=True, capture_output=True, text=True, cwd=REPO,
     )
-    printed = json.loads(result.stdout)
+    printed = json.loads(result.stdout.strip().splitlines()[-1])
     assert printed["status"] == "pass"
     assert printed["languages"] == ["en", "ja"]
     report = json.loads((destination / "demo-report.json").read_text(encoding="utf-8"))

@@ -10,7 +10,7 @@ import argparse
 import json
 from pathlib import Path
 
-import fitz
+import pymupdf as fitz
 
 from create_synthetic_score import make_synthetic_score
 from gakufulayer.blocks import assemble_blocks, remap_placements
