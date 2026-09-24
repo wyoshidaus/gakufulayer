@@ -102,3 +102,31 @@ def test_committed_result_is_immutable_by_default(tmp_path):
     assert first["status"] == "passed"
     assert second["status"] == "already_committed"
     assert passed.read_text(encoding="utf-8") == before
+
+
+def test_cli_commits_translation_unit(tmp_path, capsys):
+    from gakufulayer.cli import main
+
+    source = ready(tmp_path / "TU005.ready.txt")
+    output = write(
+        tmp_path / "fr.txt",
+        "seg-1|Bonsoir.\nseg-2|Oui, certainement.\nseg-3|Viens à moi.\n",
+    )
+    passed = tmp_path / "TU005.fr.passed.json"
+
+    code = main(
+        [
+            "commit-translation",
+            str(source),
+            str(output),
+            str(passed),
+            "--source-language",
+            "de",
+            "--target-language",
+            "fr",
+        ]
+    )
+
+    assert code == 0
+    assert capsys.readouterr().out.strip() == "passed"
+    assert json.loads(passed.read_text(encoding="utf-8"))["target_language"] == "fr"
