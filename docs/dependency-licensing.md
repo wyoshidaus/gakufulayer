@@ -118,6 +118,25 @@ GakufuLayer's own packaging has been updated to standardized PEP 639 metadata
 are evidence for a reviewer; release-specific notices must be decided and
 included in the correct distribution after legal review.
 
+## Built distribution package checks
+
+CI now creates both a wheel and a source distribution in an isolated Python
+3.12 job. The package preflight verifies:
+- the wheel advertises SPDX `License-Expression: Apache-2.0` for the
+  project's own code and declares an included `LICENSE`;
+- the wheel and sdist contain copies of the repository LICENSE with matching
+  SHA-256 digests;
+- pypdf is a base requirement but PyMuPDF is restricted to the opt-in
+  `[pdf]` extra; and
+- a fresh installation of the built wheel works without PyMuPDF.
+
+The `package-dry-run-py312` GitHub Actions artifact retains the wheel,
+sdist and `package-report.json` for 30 days. The JSON explicitly reports
+`release_cleared: false`: technical packaging checks do not constitute
+Artifex licensing approval. Publishing via other routes, including manually
+created GitHub releases, is **not** technically blocked by this CI job; the
+maintainer must continue to enforce the release checklist below.
+
 ## Release gate — must be resolved before tagging a distributed renderer
 
 - [x] Enumerate direct runtime dependencies and avoid silently installing PyMuPDF.
@@ -126,6 +145,8 @@ included in the correct distribution after legal review.
 - [x] Test core CLI without importing or installing PyMuPDF.
 - [x] Automate installed core/full dependency, license-marker and bundled
       license-text evidence inventories as downloadable CI artifacts.
+- [x] Build and smoke-test core-only wheel/sdist metadata, license files,
+      and the optional PyMuPDF dependency boundary.
 - [ ] Record pinned release dependency versions, review complete transitive
       licenses, and prepare required notices for shipped binaries/wheels.
 - [ ] Choose and document the legally reviewed renderer release path:
