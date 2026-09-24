@@ -2,7 +2,7 @@
 
 **GakufuLayer** is an early-stage open-source Python project focused on multilingual vocal and opera score PDF preparation. Its goal is to preserve musical notation while adding language-specific lyric translations, pronunciation (IPA), and other searchable annotation layers. Large scores are processed in manageable page blocks.
 
-> **Status:** The initial prototype implements PDF page-block preprocessing and language-selection metadata. It **does not yet translate lyrics, produce IPA, or place annotations**. The existing Japanese-only VSOPER implementation has not yet been migrated or audited.
+> **Status:** Working prototypes include PDF page-block preprocessing, language selection, VSOPER-derived translation-result validation/atomic commits, a provider-neutral interface with a reviewed-text adapter, and selectable PDF text overlays from **reviewed, manually positioned** translations. **Automatic lyric extraction, machine translation, IPA generation, and automatic score-aware placement are not implemented.**
 
 ## Why multilingual?
 
@@ -16,7 +16,10 @@ For example, one German source score may be prepared for both Japanese and Engli
 - Restrict preprocessing to selected 1-based pages (for example, pages 1–50).
 - Create a JSON manifest linking blocks to source pages.
 - Record a source language and multiple distinct target languages (common language-tag forms such as `de`, `ja`, `en`, `fr`, `zh-Hans`, and `pt-BR`).
-- Run unit tests on synthetic PDF fixtures; no copyrighted score PDFs are bundled.
+- Validate and atomically commit ChatGPT- or human-produced translation-unit text for any declared target language.
+- Render **reviewed** translations with supplied coordinates into one PDF per language, and optionally an OCG-toggleable combined multilingual PDF.
+- Render tested Japanese and Latin examples with Unicode text extraction; Arabic requires an explicit, tested font.
+- Run unit tests on synthetic PDF fixtures; no copyrighted score PDFs or font files are bundled.
 
 ## Quick start
 
@@ -36,13 +39,24 @@ Adjust `--end-page` if the source PDF contains fewer than 50 pages. Output inclu
 {"languages": {"source": "de", "targets": ["ja", "en"]}}
 ```
 
+## Translation and PDF rendering
+
+The rendering step requires a **reviewed, pre-positioned** JSON placement document. It does not discover empty spaces on the score automatically. The sample in [examples/placements.synthetic.json](examples/placements.synthetic.json) is for a synthetic PDF only.
+
+```bash
+gakufulayer render synthetic-score.pdf examples/placements.synthetic.json \
+  --output-dir build/translated --combined
+```
+
+The combined PDF contains one optional content group per target language, enabling layer switching in compatible viewers. See [PDF overlay usage and limitations](docs/overlay.md) and [VSOPER migration audit](docs/vsoper-migration.md).
+
 ## Planned architecture
 
-1. Extract lyric lines and associate them with score coordinates.
-2. Import reviewed translations or connect replaceable translation providers, independently of the PDF engine.
-3. Generate and review IPA for the **source language**; IPA is distinct from a translation.
-4. Render independent annotation layers for target languages, respecting text direction, font coverage, line wrapping, and score geometry.
-5. Validate text placement and assemble resumable page blocks into PDFs.
+1. Extract and align lyric lines and source coordinates automatically.
+2. Connect real translation providers as replaceable adapters; keep human review mandatory for publication output.
+3. Generate and review IPA for the **source language**; IPA is distinct from translation.
+4. Plan score-aware placement without collisions, support more tested scripts and verify large-score page-block reassembly.
+5. Benchmark resumable workflows on legally usable large scores.
 
 See [architecture](docs/architecture.md), [multilingual design](docs/multilingual.md), and [roadmap](docs/roadmap.md).
 
