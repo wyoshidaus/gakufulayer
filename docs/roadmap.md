@@ -6,7 +6,7 @@
 - [x] Implement page-block preprocessing and synthetic-PDF tests in the local prototype.
 - [x] Support metadata for one source language and multiple translation targets in the local prototype.
 - [x] Publish initial preprocessing and language-metadata code to GitHub.
-- [ ] Confirm and add a real open-source LICENSE (Apache-2.0 proposed).
+- [x] Adopt Apache License 2.0 for newly authored GakufuLayer code.
 - [ ] Inspect VSOPER code, dependencies, and score/translation assets before migration.
 
 ## Multilingual pipeline
