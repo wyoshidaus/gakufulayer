@@ -6,6 +6,7 @@ import argparse
 import json
 from pathlib import Path
 
+from gakufulayer.blocks import assemble_blocks, remap_placements
 from gakufulayer.preprocess import split_pdf
 from gakufulayer.overlay import render_layers
 from gakufulayer.translation_commit import commit_translation
@@ -38,6 +39,21 @@ def main(argv: list[str] | None = None) -> int:
     commit.add_argument("--source-language", required=True)
     commit.add_argument("--target-language", required=True)
     commit.add_argument("--overwrite", action="store_true")
+
+    assemble = commands.add_parser(
+        "assemble", help="Rejoin PDF blocks and report original-to-output page mapping",
+    )
+    assemble.add_argument("manifest_json")
+    assemble.add_argument("output_pdf")
+    assemble.add_argument("--source-pdf", help="Verify source-page geometry and text")
+    assemble.add_argument("--report", help="Write JSON source-to-output page mapping")
+
+    remap = commands.add_parser(
+        "remap-placements", help="Map original page references to an assembled PDF",
+    )
+    remap.add_argument("placements_json")
+    remap.add_argument("assembly_report")
+    remap.add_argument("output_placements_json")
 
     render = commands.add_parser(
         "render",
@@ -87,6 +103,33 @@ def main(argv: list[str] | None = None) -> int:
             parser.error(str(exc))
         print(result["status"])
         return 0 if result["status"] in {"passed", "already_committed"} else 2
+
+    if args.command == "assemble":
+        try:
+            report = assemble_blocks(
+                args.manifest_json, args.output_pdf, source_pdf=args.source_pdf
+            )
+            if args.report:
+                report_path = Path(args.report)
+                report_path.parent.mkdir(parents=True, exist_ok=True)
+                report_path.write_text(
+                    json.dumps(report, ensure_ascii=False, indent=2) + "\n",
+                    encoding="utf-8",
+                )
+        except (OSError, ValueError) as exc:
+            parser.error(str(exc))
+        print(json.dumps(report, ensure_ascii=False))
+        return 0
+
+    if args.command == "remap-placements":
+        try:
+            result = remap_placements(
+                args.placements_json, args.assembly_report, args.output_placements_json
+            )
+        except (OSError, ValueError) as exc:
+            parser.error(str(exc))
+        print(json.dumps(result, ensure_ascii=False))
+        return 0
 
     if args.command == "render":
         fonts: dict[str, str] = {}

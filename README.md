@@ -39,6 +39,27 @@ Adjust `--end-page` if the source PDF contains fewer than 50 pages. Output inclu
 {"languages": {"source": "de", "targets": ["ja", "en"]}}
 ```
 
+## Reassemble page blocks and preserve page references
+
+For a selected range of a long score, join the generated blocks and produce an explicit
+source-page → output-page map before applying reviewed placements:
+
+```bash
+gakufulayer assemble build/score/manifest.json build/score/selected.pdf \
+  --source-pdf path/to/score.pdf --report build/score/page-map.json
+gakufulayer remap-placements original-placements.json \
+  build/score/page-map.json build/score/selected-placements.json
+gakufulayer render build/score/selected.pdf \
+  build/score/selected-placements.json --output-dir build/score/rendered --combined
+```
+
+The assembly step orders blocks by their original page numbers, rejects missing or
+overlapping ranges, and checks source-page dimensions and extractable text when
+`--source-pdf` is given. The remapping step converts original page references, for
+example source page 5 → assembled page 4. It refuses placements outside the selected
+range or placements already remapped. This does not replace visual checks for
+image-only score pages.
+
 ## Translation and PDF rendering
 
 The rendering step requires a **reviewed, pre-positioned** JSON placement document. It does not discover empty spaces on the score automatically. The sample in [examples/placements.synthetic.json](examples/placements.synthetic.json) is for a synthetic PDF only.

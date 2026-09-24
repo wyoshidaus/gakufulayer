@@ -20,7 +20,8 @@
 - [ ] Add source-language IPA, fonts and layout tests for CJK and RTL scripts.
 - [x] Render reviewed, explicitly positioned multilingual text as selectable PDFs and optional OCG groups.
 - [ ] Detect valid score-relative placement automatically and validate collision with notation.
-- [ ] Verify mapping and merge behavior for independently preprocessed page blocks.
+- [x] Reassemble independently preprocessed page blocks and verify selected source-page mapping with synthetic PDF tests.
+- [ ] Benchmark this assembly pipeline on an authorized full-length opera and add visual QC for image-only source pages.
 - [ ] Add resumable blocks, validation and deterministic PDF assembly.
 
 ## Community readiness
