@@ -132,3 +132,24 @@ def test_renderer_stages_outputs_until_metadata_audit_passes(tmp_path, monkeypat
     with pytest.raises(ValueError, match="Metadata provenance audit failed"):
         overlay.render_layers(source, spec, tmp_path / "out", combined=True)
     assert not list((tmp_path / "out").glob("*.pdf"))
+
+
+def test_source_notice_survives_preprocess_and_assembly(tmp_path):
+    from gakufulayer.blocks import assemble_blocks
+    from gakufulayer.preprocess import split_pdf
+
+    source = tmp_path / "source-with-rights.pdf"
+    make_source(source)
+    manifest = split_pdf(source, tmp_path / "blocks", block_size=1)
+    block = tmp_path / "blocks" / manifest["blocks"][0]["file"]
+    assert audit_pdf_metadata(source, block)["status"] == "pass"
+
+    assembled = tmp_path / "assembled.pdf"
+    report = assemble_blocks(tmp_path / "blocks" / "manifest.json", assembled, source_pdf=source)
+    assert report["metadata_from"] == "original_source_pdf"
+    assert audit_pdf_metadata(source, assembled)["status"] == "pass"
+
+    no_original = tmp_path / "assembled-from-block.pdf"
+    fallback = assemble_blocks(tmp_path / "blocks" / "manifest.json", no_original)
+    assert fallback["metadata_from"] == "first_block_unverified"
+    assert audit_pdf_metadata(source, no_original)["status"] == "pass"

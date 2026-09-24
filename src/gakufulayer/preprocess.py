@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Iterable
 
 from gakufulayer.languages import configure_languages
+from gakufulayer.pdf_metadata import copy_source_metadata
 from pypdf import PdfReader, PdfWriter
 
 
@@ -52,6 +53,7 @@ def split_pdf(
         filename = f"pages_{first:04d}-{last:04d}.pdf"
         relative_path = Path("blocks") / filename
         writer = PdfWriter()
+        copy_source_metadata(reader, writer)
         for page_number in range(first, last + 1):
             writer.add_page(reader.pages[page_number - 1])
         with (destination / relative_path).open("wb") as stream:

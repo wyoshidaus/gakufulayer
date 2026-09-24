@@ -10,7 +10,8 @@ import json
 from pathlib import Path
 from typing import Any
 
-from pypdf import PdfReader
+from pypdf import PdfReader, PdfWriter
+from pypdf.generic import DecodedStreamObject, NameObject
 
 # Dates may legitimately change when a new PDF is written; they are reported
 # separately in the future if release review needs them.
@@ -29,6 +30,34 @@ def _metadata_snapshot(path: str | Path) -> tuple[dict[str, str], bytes]:
     xmp_ref = reader.trailer["/Root"].get("/Metadata")
     xml_bytes = xmp_ref.get_object().get_data() if xmp_ref is not None else b""
     return info, xml_bytes
+
+
+def copy_source_metadata(source: PdfReader, destination: PdfWriter) -> dict[str, Any]:
+    """Copy original PDF Info and XMP to a new PDF writer without flattening pages.
+
+    pypdf has public add_metadata for PDF Info but no public root-XMP setter
+    across the supported versions. The small catalog write below is covered
+    by synthetic round-trip tests in the supported Python CI matrix.
+    """
+    if source.is_encrypted:
+        raise ValueError("Cannot copy metadata from encrypted source PDF")
+    values = {
+        str(key): str(value)
+        for key, value in (source.metadata or {}).items()
+        if value is not None
+    }
+    if values:
+        destination.add_metadata(values)
+    original_xmp = source.trailer["/Root"].get("/Metadata")
+    if original_xmp is not None:
+        xmp_stream = DecodedStreamObject()
+        xmp_stream.set_data(original_xmp.get_object().get_data())
+        xmp_stream.update({
+            NameObject("/Type"): NameObject("/Metadata"),
+            NameObject("/Subtype"): NameObject("/XML"),
+        })
+        destination._root_object[NameObject("/Metadata")] = destination._add_object(xmp_stream)
+    return {"copied_info_fields": sorted(values), "copied_xmp": original_xmp is not None}
 
 
 def audit_pdf_metadata(

@@ -71,7 +71,9 @@ an optional Python extra is an engineering separation, not a legal conclusion.
 
 ## Metadata audit and reproducible dependency evidence
 
-The renderer now audits both the PDF Info dictionary and raw XMP streams for
+The preprocessing and block-assembly stages copy the source PDF Info dictionary
+and raw XMP streams, and the renderer audits both the PDF Info dictionary and
+raw XMP streams for
 **each staged per-language PDF and the combined OCG PDF**. Changed or missing
 source metadata blocks publication; an absent output Producer is reported as
 `review_required`, not treated as legal clearance. The audit does not claim
@@ -108,6 +110,7 @@ must be reviewed alongside transitive license texts and notices before release.
       AGPL-compliant full distribution; Artifex commercial license; or an
       appropriately licensed replacement.
 - [ ] Define hosted-service obligations if offering any networked workflow.
+- [x] Copy source /Info and XMP when splitting and reassembling page blocks.
 - [x] Add fail-closed automatic /Info and XMP source-provenance checks to
       staged per-language and combined renderer output.
 - [ ] Review representative real source PDFs and postprocessed output,

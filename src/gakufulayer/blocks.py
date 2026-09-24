@@ -14,6 +14,8 @@ from typing import Any
 
 from pypdf import PdfReader, PdfWriter
 
+from gakufulayer.pdf_metadata import copy_source_metadata
+
 
 def _positive_int(value: Any, name: str) -> int:
     if type(value) is not int or value < 1:
@@ -90,6 +92,10 @@ def assemble_blocks(
     next_source = start
     verified_text_pages = 0
     paths: set[Path] = set()
+    metadata_from: str | None = None
+    if original_reader is not None:
+        copy_source_metadata(original_reader, writer)
+        metadata_from = "original_source_pdf"
 
     for record in ordered:
         first = _positive_int(record.get("start_page"), "block start_page")
@@ -116,6 +122,9 @@ def assemble_blocks(
             raise FileNotFoundError(f"Block not found: {block}")
 
         reader = PdfReader(str(block))
+        if original_reader is None and metadata_from is None:
+            copy_source_metadata(reader, writer)
+            metadata_from = "first_block_unverified"
         if len(reader.pages) != declared_count:
             raise ValueError(f"Block {filename} has unexpected PDF page count")
 
@@ -166,6 +175,7 @@ def assemble_blocks(
         "end_page": end,
         "output_page_count": len(mapping),
         "source_pdf_compared": original is not None,
+        "metadata_from": metadata_from,
         "text_checked_pages": verified_text_pages,
         "page_mapping": mapping,
     }
