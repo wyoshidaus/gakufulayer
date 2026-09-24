@@ -1,6 +1,6 @@
 # GakufuLayer (楽譜レイヤー)
 
-**GakufuLayer** is an early-stage, multilingual, open-source project for preparing vocal and opera score PDFs. Its goal is to preserve musical notation while adding language-specific lyric translations, pronunciation (IPA), and other searchable annotation layers. Large scores are processed in manageable page blocks.
+**GakufuLayer** is an early-stage public Python project intended for open-source licensing, focused on multilingual vocal and opera score PDF preparation. Its goal is to preserve musical notation while adding language-specific lyric translations, pronunciation (IPA), and other searchable annotation layers. Large scores are processed in manageable page blocks.
 
 > **Status:** The initial prototype implements PDF page-block preprocessing and language-selection metadata. It **does not yet translate lyrics, produce IPA, or place annotations**. The existing Japanese-only VSOPER implementation has not yet been migrated or audited.
 
