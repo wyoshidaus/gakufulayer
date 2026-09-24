@@ -9,4 +9,4 @@ GakufuLayer is being built as a multilingual tool for preparing vocal scores. It
 5. For translation or pronunciation features, include source-language context, human-review requirements, and appropriate script or RTL test cases. Do not claim a language is supported until reviewed end-to-end tests exist.
 6. Never commit API keys, private score libraries, user data, or material whose redistribution rights are unclear.
 
-GakufuLayer's original code is Apache-2.0 licensed. Contributions are submitted under that license unless expressly agreed otherwise. Third-party scores, lyrics, translations and fonts are subject to separate rights; only provide assets with verified redistribution permission.
+GakufuLayer's original code is Apache-2.0 licensed. Contributions are submitted under that license unless expressly agreed otherwise. Third-party scores, lyrics, translations and fonts are subject to separate rights; only provide assets with verified redistribution permission. The PDF renderer currently uses PyMuPDF (AGPLv3 or commercial terms); see issue #5 before distributing a combined application or deploying a hosted service.
