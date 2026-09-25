@@ -25,4 +25,3 @@
 - [ ] Publish installation guide, contribution guidance, issue templates and CI results.
 - [ ] Publish performance measurements against a permitted large-score fixture.
 - [ ] Tag a release only after the documented functionality is tested.
-- [ ] Prepare a factual Codex for Open Source application with maintainer activity and intended API-credit use.
