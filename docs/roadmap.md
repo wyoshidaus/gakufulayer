@@ -28,8 +28,8 @@
 
 - [ ] Verify reuse rights for every published example asset.
 - [ ] Publish installation guide, contribution guidance, issue templates and CI results.
+- [x] Add a reproducible one-page synthetic end-to-end demonstration with CI JSON reports.
 - [ ] Publish performance measurements against a permitted large-score fixture.
 - [x] Separate the permissively licensed core install from the optional PyMuPDF PDF renderer.
 - [ ] Complete PyMuPDF distribution, network-use and PDF producer metadata due diligence (issue #5) before releasing.
 - [ ] Tag a release only after the documented functionality is tested.
-- [ ] Prepare a factual Codex for Open Source application with maintainer activity and intended API-credit use.

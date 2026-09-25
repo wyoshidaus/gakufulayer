@@ -78,6 +78,21 @@ gakufulayer render synthetic-score.pdf examples/placements.synthetic.json \
   --output-dir build/translated --combined
 ```
 
+For a reproducible demonstration of the implemented pipeline using only
+synthetic, legally shareable input:
+
+```bash
+python examples/run_synthetic_demo.py --output-dir build/synthetic-demo
+```
+
+This runs PDF splitting, verified reassembly, placement remapping and
+independent Japanese/English plus combined-layer rendering. It checks source
+vector drawings and extractable text. The Python 3.10/3.12 CI jobs archive
+JSON demonstration reports without redistributing the generated PDFs.
+It does **not** demonstrate automatic translation, IPA generation or
+notation-aware placement, nor does it establish optional renderer license
+clearance.
+
 The renderer compares source and output PDF Info/XMP metadata before publishing each language file. A changed or missing source notice fails the operation; a missing output Producer is flagged for review. To inspect an existing result without installing the PDF renderer, run `gakufulayer audit-metadata source.pdf output.pdf --report audit.json`. This is a preservation check, not proof of license compliance.
 
 The combined PDF contains one optional content group per target language, enabling layer switching in compatible viewers. See [PDF overlay usage and limitations](docs/overlay.md) and [VSOPER migration audit](docs/vsoper-migration.md).

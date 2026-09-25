@@ -42,6 +42,23 @@ not** automatically exempt combined applications or deployments from AGPL
 conditions. A permissive license on this repository's original source alone
 must never be advertised as a permissive license for an installed full stack.
 
+## Current development and distribution scope
+
+The public repository provides the Apache-2.0 **original source**, an
+isolated **core-only** package, passing CI reports and a reproducible
+synthetic demonstration. Keep PyMuPDF
+as an explicitly opt-in PDF renderer. The intended no-commercial-purchase
+development path uses upstream AGPL terms for open-source evaluation;
+a commercial contract or backend replacement is not planned at this stage.
+This choice does **not** conclude that the current Apache-2.0 repository
+meets all AGPL obligations for every combined distribution or deployment.
+
+Do **not** distribute a bundled renderer or launch a hosted PDF API while
+issue #5 remains open. Review corresponding-source obligations, appropriate
+license and producer notices, transitive dependencies and input/output asset
+rights before any such release. A successful CI run alone
+does not substitute for this review.
+
 ## Distribution scenarios requiring a decision
 
 1. **Source repository and core-only package.** GakufuLayer's original code

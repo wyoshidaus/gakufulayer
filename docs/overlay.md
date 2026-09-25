@@ -78,6 +78,6 @@ Before rendering, GakufuLayer rejects:
 
 It also checks text can fit above the configured minimum font size, verifies text extraction, and checks output page counts. Output PDFs are first staged in a temporary directory and published only after all complete successfully.
 
-**Not yet implemented:** automatic detection of free spaces in a musical score, collision checking against music notation, automatic word-by-word lyric alignment, block-to-original-page remapping, and production-scale performance benchmarks. Visual inspection of annotated score pages is still necessary.
+**Not yet implemented:** automatic detection of free spaces in a musical score, collision checking against music notation, automatic word-by-word lyric alignment, and production-scale performance benchmarks. Explicit source-to-output placement remapping is available through the [block assembly CLI](block-assembly.md). Visual inspection of annotated score pages is still necessary.
 
 The Apache-2.0 license covers the project's own source code, not imported musical scores, copyrighted lyric texts, translations, or fonts. PyMuPDF, used **only when the optional [pdf] extra is installed**, is offered under AGPLv3 or commercial terms; review the [dependency-license inventory](dependency-licensing.md) and [issue #5](https://github.com/wyoshidaus/gakufulayer/issues/5) before distributing a combined application or using it as a hosted service.
